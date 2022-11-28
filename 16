@@ -1,0 +1,50 @@
+class Calculator:
+        last = None
+        
+        def __init__(self):
+            self.history_func = []
+            
+        @classmethod
+        def last_op(cls, operator, a, b, result):
+            cls.list_last = cls.last
+            Calculator.last = f'{operator}({a}, {b}) == {result}'
+    
+        @classmethod
+        def clear(cls):
+            cls.last = None
+        
+        def sum(self, a, b):
+            result = a + b
+            Calculator.last_op('sum', a, b, result)
+            self.history_func.insert(0, f'sum({a}, {b}) == {result}')
+            return result 
+        
+        def sub(self, a, b):
+            result = a - b
+            Calculator.last_op('sub', a, b, result)
+            self.history_func.insert(0, f'sub({a}, {b}) == {result}')
+            return result 
+        
+        def mul(self, a, b):
+            result = a * b
+            Calculator.last_op('mul', a, b, result)
+            self.history_func.insert(0, f'mul({a}, {b}) == {result}')
+            return result 
+        
+        def div(self, a, b, mod=False):
+            if mod == False:
+                    result = a / b
+                    Calculator.last_op('div', a, b, '%0.1f' % result)
+                    result_1 = '%0.1f' % result
+                    self.history_func.insert(0, f'div({a}, {b}) == {result_1}')
+            else:
+                result = a % b 
+                Calculator.last_op('div', a, b, result)
+                self.history_func.insert(0, f'div({a}, {b}) == {result}')
+            return result
+        
+        def history(self, n):
+            if len(self.history_func) != 0:
+                 return self.history_func[n-1]
+            else:
+                return None
