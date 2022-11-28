@@ -1,0 +1,106 @@
+class BaseWallet:
+    exchange_rate = None
+
+    def __init__(self, name = None, amount = None):
+        self.name = name
+        self.amount = amount
+
+    def _copy(self):
+        return BaseWallet(self.name, self.amount)
+
+    def __add__(self, other):
+        new_Wallet = self._copy()
+        if isinstance(other, self.__class__):
+            new_Wallet.amount += other.amount
+        elif type(other) == (int or float):
+            new_Wallet.amount += float(other)
+        else:
+            new_currency = other.exchange_rate / self.exchange_rate
+            new_Wallet.amount += other.amount * new_currency
+        return new_Wallet
+
+    def __radd__(self, other):
+        return self.__add__(other)
+
+    def __sub__(self, other):
+        new_Wallet = self._copy()
+        if isinstance(other, self.__class__):
+            new_Wallet.amount = new_Wallet.amount - other.amount
+        elif type(other) == (int or float):
+            new_Wallet.amount = new_Wallet.amount - float(other)
+        else:
+            new_currency = other.exchange_rate / self.exchange_rate
+            new_Wallet.amount = new_Wallet.amount - other.amount * new_currency
+        return new_Wallet
+
+    def __rsub__(self, other):
+        new_Wallet = self._copy()
+        if isinstance(other, self.__class__):
+            new_Wallet.amount = other.amount - new_Wallet.amount
+        elif type(other) == (int or float):
+            new_Wallet.amount = float(other) - new_Wallet.amount
+        else:
+            new_currency = other.exchange_rate / self.exchange_rate
+            new_Wallet.amount = other.amount * new_currency - new_Wallet.amount
+        return new_Wallet
+
+    def __mul__(self, other):
+        new_Wallet = self._copy()
+        new_Wallet.amount *= other
+        return new_Wallet
+
+    def __rmul__(self, other):
+        return self.__mul__(other)
+
+    def __truediv__(self, other):
+        new_Wallet = self._copy()
+        new_Wallet.amount /= other
+        return new_Wallet
+
+    def __rtruediv__(self, other):
+        new_Wallet = self._copy()
+        new_Wallet.amount /= other
+        return new_Wallet
+
+    def __str__(self):
+        return f'{type(self)} {self.name} {self.amount}'
+
+    def __eq__(self, other):
+        return bool(type(self) == type(other) and self.amount == other.amount)
+
+    def to_base(self):
+        return self.amount * self.exchange_rate
+
+    def spend_all(self):
+        if self.amount > 0:
+            self.amount = 0
+
+
+class RubbleWallet(BaseWallet):
+    exchange_rate = 1
+
+    def _copy(self):
+        return RubbleWallet(self.name, self.amount)
+
+    def __str__(self):
+        return f'Rubble Wallet {self.name} {self.amount}'
+
+
+class DollarWallet(BaseWallet):
+    exchange_rate = 60
+
+    def _copy(self):
+        return DollarWallet(self.name, self.amount)
+
+    def __str__(self):
+        return f'Dollar Wallet {self.name} {self.amount}'
+
+
+class EuroWallet(BaseWallet):
+    exchange_rate = 70
+
+    def _copy(self):
+        return EuroWallet(self.name, self.amount)
+
+    def __str__(self):
+        return f'Euro Wallet {self.name} {self.amount}'
